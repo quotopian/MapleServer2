@@ -43,9 +43,11 @@ namespace MapleServer2.PacketHandlers.Game
             IFieldObject<Mount> fieldMount =
                 session.FieldManager.RequestFieldObject(new Mount { Type = type, Id = mountId, Uid = mountUid });
             session.Player.Mount = fieldMount;
+            session.Player.SyncNumber++;
 
             Packet startPacket = MountPacket.StartRide(session.FieldPlayer);
             session.FieldManager.BroadcastPacket(startPacket);
+            session.Send(SyncStatePacket.SyncNumber(session.FieldPlayer));
         }
 
         private static void HandleStopRide(GameSession session, PacketReader packet)
@@ -54,8 +56,11 @@ namespace MapleServer2.PacketHandlers.Game
             bool forced = packet.ReadBool(); // Going into water without amphibious riding
 
             session.Player.Mount = null; // Remove mount from player
+            session.Player.SyncNumber++;
+
             Packet stopPacket = MountPacket.StopRide(session.FieldPlayer, forced);
             session.FieldManager.BroadcastPacket(stopPacket);
+            session.Send(SyncStatePacket.SyncNumber(session.FieldPlayer));
         }
 
         private static void HandleChangeRide(GameSession session, PacketReader packet)

@@ -21,7 +21,7 @@ namespace MapleServer2.PacketHandlers.Game
 
         public override void Handle(GameSession session, PacketReader packet)
         {
-            byte function = packet.ReadByte(); // Unknown what this is for
+            byte syncNumber = packet.ReadByte();
             session.ClientTick = packet.ReadInt(); //ClientTicks
             packet.ReadInt(); // ServerTicks
 
@@ -67,7 +67,11 @@ namespace MapleServer2.PacketHandlers.Game
                 {
                     safeBlock.Y -= Block.BLOCK_SIZE;
                 }
+                session.Player.SyncNumber++;
+
                 session.Send(UserMoveByPortalPacket.Move(session, safeBlock));
+                session.Send(SyncStatePacket.SyncNumber(session.FieldPlayer));
+                // TODO: Send stat change for HP.
                 session.Send(FallDamagePacket.FallDamage(session, 150)); // TODO: create a formula to determine HP loss
             }
             // not sure if this needs to be synced here

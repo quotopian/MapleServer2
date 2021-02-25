@@ -7,6 +7,14 @@ namespace MapleServer2.Packets
 {
     public static class SyncStatePacket
     {
+        public static Packet SyncNumber(IFieldObject<Player> player)
+        {
+            PacketWriter pWriter = PacketWriter.Of(SendOp.SYNC_NUMBER);
+            pWriter.WriteByte(player.Value.SyncNumber);
+
+            return pWriter;
+        }
+
         public static Packet UserSync(IFieldObject<Player> player, params SyncState[] syncStates)
         {
             PacketWriter pWriter = PacketWriter.Of(SendOp.USER_SYNC);

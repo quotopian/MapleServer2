@@ -53,6 +53,7 @@ namespace MapleServer2.Types
         public List<int> FavoriteStickers = new List<int> { };
         public List<int> Emotes = new List<int> { 0 };
 
+        public byte SyncNumber;
         public CoordF Coord;
         public CoordF Rotation;
         public CoordF SafeBlock = CoordF.From(0, 0, 0);
